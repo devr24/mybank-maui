@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace mybank_maui
+namespace MyBankApp
 {
     public class Program
     {

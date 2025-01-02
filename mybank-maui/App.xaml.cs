@@ -1,4 +1,4 @@
-﻿namespace mybank_maui
+﻿namespace MyBankApp
 {
     public partial class App : Application
     {

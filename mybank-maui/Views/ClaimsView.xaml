@@ -1,12 +1,55 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="mybank_maui.ClaimsView"
-             Title="ClaimsView">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
+             x:Class="MyBankApp.ClaimsView" 
+             Shell.BackgroundColor="#ececec"
+             Shell.TitleColor="#212529"
+             Title="Home">
+    <ScrollView>
+        <VerticalStackLayout Spacing="15" Padding="30,0">
+            <Label 
+            Text="{Binding UserDisplayName, StringFormat='Welcome back, {0}!'}"
+            FontSize="26"
+            FontAttributes="Bold"
+            Padding="0,20,0,0"
             HorizontalOptions="Center" />
-    </VerticalStackLayout>
+            
+            <Label 
+            Text="You are signed in using Microsoft CIAM Identity"
+            FontSize="16"
+            Padding="10,0,10,10"
+            TextColor="#333333"
+            HorizontalOptions="Center" />
+
+            <Label 
+            Padding="0,10,0,0"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+            FontSize="18"
+            Text="ID Token Claims"
+            />
+            <Border Stroke="#e9ecef" StrokeThickness="1">
+                <ListView ItemsSource="{Binding IdTokenClaims}"
+                    x:Name="Claims"
+                    HeightRequest="280">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid Padding="0, 0, 0, 0">
+                                    <Label Grid.Column="1" 
+                                   Text="{Binding}" 
+                                   HorizontalOptions="Center" />
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Border>
+            <Button
+            Text="Logout"
+            BackgroundColor="#0d6efd"
+            HorizontalOptions="Center"
+            Clicked="OnLogoutClicked" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
