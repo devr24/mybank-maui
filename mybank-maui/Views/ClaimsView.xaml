@@ -6,18 +6,21 @@
              Shell.TitleColor="#212529"
              Title="Home">
     <ScrollView>
-        <VerticalStackLayout Spacing="15" Padding="30,0">
+        <VerticalStackLayout 
+            Spacing="25" 
+            Padding="20,10,20,20">
+            
             <Label 
             Text="{Binding UserDisplayName, StringFormat='Welcome back, {0}!'}"
             FontSize="26"
             FontAttributes="Bold"
-            Padding="0,20,0,0"
+            Padding="0,10,0,0"
             HorizontalOptions="Center" />
             
             <Label 
             Text="You are signed in using Microsoft CIAM Identity"
             FontSize="16"
-            Padding="10,0,10,10"
+            Padding="10,0,10,0"
             TextColor="#333333"
             HorizontalOptions="Center" />
 
@@ -28,6 +31,7 @@
             FontSize="18"
             Text="ID Token Claims"
             />
+            
             <Border Stroke="#e9ecef" StrokeThickness="1">
                 <ListView ItemsSource="{Binding IdTokenClaims}"
                     x:Name="Claims"

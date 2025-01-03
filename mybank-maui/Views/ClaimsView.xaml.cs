@@ -72,6 +72,8 @@ public partial class ClaimsView : ContentPage
 
                 // After the user selects "Sign out", remove the account and go back to main page
                 await _authClient.RemoveAsync(account);
+                await _authClient.RemoveAsync(null);
+
                 await Shell.Current.GoToAsync("//MainPage");
             }
         }

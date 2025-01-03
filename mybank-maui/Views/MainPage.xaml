@@ -10,26 +10,27 @@
         <BackButtonBehavior IsVisible="False" IsEnabled="False" />
     </Shell.BackButtonBehavior>
 
-    <ScrollView>
-        <VerticalStackLayout 
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout 
             Spacing="25" 
-            Padding="30,0" 
+            Padding="20,10,20,20" 
             VerticalOptions="Center">
 
-            <Image
+                <Image
                 Source="logo.png"
                 SemanticProperties.Description="External ID"
                 HeightRequest="100"
                 HorizontalOptions="Center" />
 
 
-            <Label 
+                <Label 
                 Text="Sign in or sign up using external entra.  This creates a guest account in our entra tenancy.  Allowing us to manage the account (reset passwords, disable account etc)."
                 SemanticProperties.HeadingLevel="Level2"
                 FontSize="22"
                 HorizontalOptions="Center" />
 
-            <Button 
+                <Button 
                 Text="Login Now"
                 SemanticProperties.Hint="Login Now"
                 Clicked="OnLoginClicked"
@@ -37,7 +38,23 @@
                 HorizontalOptions="Center"
                 />
 
-        </VerticalStackLayout>
-    </ScrollView>
-
+            </VerticalStackLayout>
+        </ScrollView>
+        <!-- Loading overlay -->
+        <Grid x:Name="LoadingOverlay" 
+            IsVisible="false"
+            BackgroundColor="#80000000">
+            <VerticalStackLayout HorizontalOptions="Center" 
+                            VerticalOptions="Center" 
+                            Spacing="10">
+                <ActivityIndicator IsRunning="True" 
+                                Color="White" 
+                                HeightRequest="50" 
+                                WidthRequest="50"/>
+                <Label Text="Loading..."
+                    TextColor="White"
+                    FontSize="16"/>
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
 </ContentPage>

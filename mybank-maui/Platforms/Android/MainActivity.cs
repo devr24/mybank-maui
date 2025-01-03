@@ -3,6 +3,7 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Microsoft.Identity.Client;
+using Plugin.Fingerprint;
 
 namespace MyBankApp;
 
@@ -13,6 +14,8 @@ public class MainActivity : MauiAppCompatActivity
     {
         base.OnCreate(savedInstanceState);
         Microsoft.Maui.ApplicationModel.Platform.Init(this, savedInstanceState);
+
+        CrossFingerprint.SetCurrentActivityResolver(() => this);
     }
 
     protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)

@@ -23,6 +23,8 @@ public partial class MainPage : ContentPage
 
     private async void MainPage_Appearing(object? sender, EventArgs e)
     {
+        await Dispatcher.DispatchAsync(() => LoadingOverlay.IsVisible = false);
+
         try
         {
             var accounts = await _authClient.GetAccountsAsync();
@@ -35,30 +37,46 @@ public partial class MainPage : ContentPage
                     if (result != null)
                     {
                         // Check if device supports biometric
-                        var isBiometricAvailable = await _fingerprint.IsAvailableAsync();
+                        var availability = await _fingerprint.GetAvailabilityAsync();
+                        System.Diagnostics.Debug.WriteLine($"Biometric availability: {availability}");
 
-                        if (isBiometricAvailable)
+                        if (availability == FingerprintAvailability.Available)
                         {
+                            await Dispatcher.DispatchAsync(() => LoadingOverlay.IsVisible = true);
+
                             var authRequest = new AuthenticationRequestConfiguration(
                                 "Verify identity",
                                 "Please verify your identity to continue")
                             {
-                                AllowAlternativeAuthentication = true
+                                AllowAlternativeAuthentication = true,
+                                ConfirmationRequired = true
                             };
-
-                            var biometricResult = await _fingerprint.AuthenticateAsync(authRequest);
-
-                            if (biometricResult.Authenticated)
+                            await Dispatcher.DispatchAsync(async () =>
                             {
-                                await Shell.Current.GoToAsync("//ClaimsView");
-                            }
+                                var biometricResult = await _fingerprint.AuthenticateAsync(authRequest);
+                                System.Diagnostics.Debug.WriteLine($"Biometric result: {biometricResult.Status}");
+
+                                if (biometricResult.Authenticated)
+                                {
+                                    //LoadingOverlay.IsVisible = false;
+
+                                    await Shell.Current.GoToAsync("//ClaimsView");
+                                }
+                                else
+                                {
+                                    //LoadingOverlay.IsVisible = false;
+
+                                    // Authentication failed or was canceled
+                                    System.Diagnostics.Debug.WriteLine($"Authentication failed: {biometricResult.Status}");
+                                }
+                            });
                         }
                         else
                         {
-                            // If biometric is not available, you might want to show a PIN entry or other fallback.
+                            // If biometric is not available, show why
                             await Dispatcher.DispatchAsync(async () =>
                             {
-                                await DisplayAlert("Notice", "Biometric authentication is not available on this device", "OK");
+                                await DisplayAlert("Notice", $"Biometric authentication is not available: {availability}", "OK");
                             });
                             await Shell.Current.GoToAsync("//ClaimsView");
                         }
@@ -83,6 +101,7 @@ public partial class MainPage : ContentPage
             var accounts = await _authClient.GetAccountsAsync();
             AuthenticationResult result;
 
+            await Dispatcher.DispatchAsync(() => LoadingOverlay.IsVisible = true);
             try
             {
                 if (accounts.Any())
@@ -106,6 +125,7 @@ public partial class MainPage : ContentPage
             }
             catch (MsalUiRequiredException ex)
             {
+                await Dispatcher.DispatchAsync(() => LoadingOverlay.IsVisible = false);
                 System.Diagnostics.Debug.WriteLine($"MSAL UI Required Exception: {ex.Message}");
                 try
                 {
@@ -119,18 +139,21 @@ public partial class MainPage : ContentPage
                 }
                 catch (Exception innerEx)
                 {
+                    await Dispatcher.DispatchAsync(() => LoadingOverlay.IsVisible = false);
                     System.Diagnostics.Debug.WriteLine($"Interactive login failed: {innerEx.Message}");
                     await DisplayAlert("Login Error", $"Interactive login failed: {innerEx.Message}", "OK");
                 }
             }
             catch (Exception ex)
             {
+                await Dispatcher.DispatchAsync(() => LoadingOverlay.IsVisible = false);
                 System.Diagnostics.Debug.WriteLine($"Authentication error: {ex.Message}");
                 await DisplayAlert("Login Error", $"Authentication failed: {ex.Message}", "OK");
             }
         }
         catch (Exception ex)
         {
+            await Dispatcher.DispatchAsync(() => LoadingOverlay.IsVisible = false);
             System.Diagnostics.Debug.WriteLine($"Outer error: {ex.Message}");
             await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
         }
